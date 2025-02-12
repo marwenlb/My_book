@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.book.mybook.components.BottomNavItem
+import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.ui.theme.BeigeColor
 
 data class CategoryItem(
@@ -47,45 +50,59 @@ fun MesLivresScreen(navController: NavController) {
         CategoryItem("J'aime", Icons.Default.Star)
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        categories.forEach { category ->
-            Card(
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .clickable { /* Action à définir */ },
-                colors = CardDefaults.cardColors(
-                    containerColor = BeigeColor
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                )
-            ) {
-                Row(
+    // Bottom navigation items
+    val bottomNavItems = listOf(
+        BottomNavItem.MesLivres,
+        BottomNavItem.Collection,
+        BottomNavItem.Recherche
+    )
+
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(navController = navController, items = bottomNavItems)
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            categories.forEach { category ->
+                Card(
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .clickable { /* Action à définir */ },
+                    colors = CardDefaults.cardColors(
+                        containerColor = BeigeColor
+                    ),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 4.dp
+                    )
                 ) {
-                    Icon(
-                        imageVector = category.icon,
-                        contentDescription = category.name,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = category.name,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Icon(
+                            imageVector = category.icon,
+                            contentDescription = category.name,
+                            modifier = Modifier.size(32.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = category.name,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
                 }
             }
         }

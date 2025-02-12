@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.book.mybook.screen.HomeScreen
 import com.book.mybook.screen.LoginScreen
 import com.book.mybook.screen.MesLivresScreen
+import com.book.mybook.screen.SearchScreen
 import com.book.mybook.screen.SignupScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,8 +24,9 @@ fun AuthNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         composable("signup") { SignupScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("mes_livres") { MesLivresScreen(navController) }
-
-    }
+        composable("collection") { MesLivresScreen(navController) }
+        composable("recherche") { SearchScreen(navController) }
+        }
 }
 
 
