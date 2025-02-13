@@ -18,9 +18,9 @@ import com.book.mybook.components.BottomNavigationBar
 fun HomeScreen(navController: NavController) {
     val items = listOf(
         BottomNavItem.MesLivres,
-        BottomNavItem.Recherche,
-        BottomNavItem.Collection
-    )
+        BottomNavItem.Collection,
+        BottomNavItem.Recherche
+        )
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Mes Livres") }) },

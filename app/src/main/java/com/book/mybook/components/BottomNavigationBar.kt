@@ -42,6 +42,7 @@ fun BottomNavigationBar(
 ) {
     NavigationBar {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
         items.forEach { item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
@@ -50,5 +51,6 @@ fun BottomNavigationBar(
                 label = { Text(item.label) }
             )
         }
+
     }
 }

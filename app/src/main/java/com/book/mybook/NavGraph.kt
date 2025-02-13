@@ -6,6 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.book.mybook.screen.BarCodeSearchScreen
+import com.book.mybook.screen.BarcodeScannerScreen
+import com.book.mybook.screen.CollectionScreen
 import com.book.mybook.screen.HomeScreen
 import com.book.mybook.screen.LoginScreen
 import com.book.mybook.screen.MesLivresScreen
@@ -24,8 +27,10 @@ fun AuthNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         composable("signup") { SignupScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("mes_livres") { MesLivresScreen(navController) }
-        composable("collection") { MesLivresScreen(navController) }
+        composable("collection") { CollectionScreen(navController) }
         composable("recherche") { SearchScreen(navController) }
+        composable("barcode_scanner") { BarcodeScannerScreen(navController) }
+        composable("barcode_search") { BarCodeSearchScreen(navController) }
         }
 }
 

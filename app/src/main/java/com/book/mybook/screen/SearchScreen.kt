@@ -1,18 +1,21 @@
 package com.book.mybook.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,17 +36,23 @@ fun SearchScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
+
             TopAppBar(
-                title = { Text("ISBN Options") },
+                title = { Text("Recherche par ISBN ") },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxHeight(0.09f),
+
                 navigationIcon = {
+
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack ,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
                 }
             )
+
         },
         bottomBar = {
             BottomNavigationBar(navController = navController, items = bottomNavItems)
@@ -59,7 +68,8 @@ fun SearchScreen(navController: NavController) {
             // First Button: Scanner le code ISBN
             Button(
                 onClick = {
-                    // Action pour scanner le code ISBN
+                    navController.navigate("barcode_scanner")
+
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
@@ -71,7 +81,8 @@ fun SearchScreen(navController: NavController) {
             // Second Button: Entrer le code ISBN manuellement
             Button(
                 onClick = {
-                    // Action pour entrer le code ISBN manuellement
+                    navController.navigate("barcode_search")
+                        // Action pour entrer le code ISBN manuellement
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
