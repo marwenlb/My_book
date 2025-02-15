@@ -3,17 +3,18 @@ package com.book.mybook.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.ui.theme.BeigeColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,21 +49,26 @@ fun CollectionScreen(navController: NavController) {
     val searchQuery = remember { mutableStateOf(TextFieldValue("")) }
 
     Scaffold(
-        topBar = {
+                topBar = {
             TopAppBar(
-                title = { Text("Collection") } ,
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
-                modifier = Modifier.fillMaxHeight(0.09f)
-
-
+                title = { Text("Collection") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = BeigeColor,
+                    titleContentColor = Color.Black
+                )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Action to create a new collection */ },
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
+                containerColor = BeigeColor,
+                contentColor = Color.Black
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Collection")
             }
@@ -91,7 +98,7 @@ fun CollectionScreen(navController: NavController) {
                     modifier = Modifier.weight(1f),
                     placeholder = { Text("Rechercher une collection") },
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
+                        containerColor = BeigeColor,
                         focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
                     )
@@ -110,7 +117,11 @@ fun CollectionScreen(navController: NavController) {
             // Button: Créer une collection
             Button(
                 onClick = { /* Action to create a new collection */ },
-                modifier = Modifier.fillMaxWidth(0.8f)
+                modifier = Modifier.fillMaxWidth(0.8f),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = BeigeColor,
+                    contentColor = Color.Black
+                )
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,

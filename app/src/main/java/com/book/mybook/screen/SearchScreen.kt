@@ -11,7 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -19,10 +18,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.ui.theme.BeigeColor
 
 @ExperimentalMaterial3Api
 @Composable
@@ -39,7 +40,7 @@ fun SearchScreen(navController: NavController) {
 
             TopAppBar(
                 title = { Text("Recherche par ISBN ") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary),
+                colors = TopAppBarDefaults.topAppBarColors( containerColor = BeigeColor,) ,
                 modifier = Modifier.fillMaxHeight(0.09f),
 
                 navigationIcon = {
@@ -67,6 +68,9 @@ fun SearchScreen(navController: NavController) {
         ) {
             // First Button: Scanner le code ISBN
             Button(
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = BeigeColor,
+                    contentColor = Color.Black) ,
                 onClick = {
                     navController.navigate("barcode_scanner")
 
@@ -76,17 +80,23 @@ fun SearchScreen(navController: NavController) {
                     .padding(vertical = 8.dp)
             ) {
                 Text("Scanner le code ISBN")
+
             }
 
             // Second Button: Entrer le code ISBN manuellement
             Button(
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = BeigeColor,
+                    contentColor = Color.Black) ,
                 onClick = {
                     navController.navigate("barcode_search")
+
                         // Action pour entrer le code ISBN manuellement
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
                     .padding(vertical = 8.dp)
+
             ) {
                 Text("Entrer le code ISBN manuellement")
             }

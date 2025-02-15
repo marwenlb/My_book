@@ -10,10 +10,15 @@ import com.book.mybook.screen.BarCodeSearchScreen
 import com.book.mybook.screen.BarcodeScannerScreen
 import com.book.mybook.screen.CollectionScreen
 import com.book.mybook.screen.HomeScreen
+import com.book.mybook.screen.JaiLivresScreen
+import com.book.mybook.screen.JaiLuLivresScreen
+import com.book.mybook.screen.JaimeLivresScreen
+import com.book.mybook.screen.JeLisLivresScreen
 import com.book.mybook.screen.LoginScreen
 import com.book.mybook.screen.MesLivresScreen
 import com.book.mybook.screen.SearchScreen
 import com.book.mybook.screen.SignupScreen
+import com.book.mybook.screen.WhishlistLivresScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +36,11 @@ fun AuthNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         composable("recherche") { SearchScreen(navController) }
         composable("barcode_scanner") { BarcodeScannerScreen(navController) }
         composable("barcode_search") { BarCodeSearchScreen(navController) }
+        composable("jai_livres") { JaiLivresScreen(navController) }
+        composable("wishlist_livres") { WhishlistLivresScreen(navController) }
+        composable("jai_lu_livres") { JaiLuLivresScreen(navController) }
+        composable("je_lis_livres") { JeLisLivresScreen(navController) }
+        composable("jaime_livres") { JaimeLivresScreen(navController) }
         }
 }
 

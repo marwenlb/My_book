@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -76,7 +77,31 @@ fun MesLivresScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp)
-                        .clickable { /* Action à définir */ },
+                        .clickable {
+
+                            if (category.name == "J'ai") {
+
+                                navController.navigate("jai_livres")
+
+                            } else if (category.name == "Wishlist") {
+                                navController.navigate("wishlist_livres")
+                            }
+                            else if (category.name == "J'ai lu") {
+
+                                navController.navigate("jai_lu_livres")
+
+                            }
+                            else if (category.name == "Je lis") {
+                                navController.navigate("je_lis_livres")
+
+                            }
+
+                            else if (category.name == "J'aime") {
+                            navController.navigate("jaime_livres")
+                            }
+
+
+                        },
                     colors = CardDefaults.cardColors(
                         containerColor = BeigeColor
                     ),
@@ -95,7 +120,7 @@ fun MesLivresScreen(navController: NavController) {
                             imageVector = category.icon,
                             contentDescription = category.name,
                             modifier = Modifier.size(32.dp),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.Black,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
