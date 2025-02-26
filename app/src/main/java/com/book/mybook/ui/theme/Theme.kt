@@ -12,14 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
+    primary = PrimaryColor,
+    secondary = PrimaryColor,
     tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
+    primary = PrimaryColor,
+    secondary = PrimaryColor,
     tertiary = Pink40
 
     /* Other default colors to override
@@ -35,20 +35,13 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun MyBookTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+   // darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
+    dynamicColor: Boolean = false, // Force custom colors
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    // val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = LightColorScheme // Always use light color scheme
 
     MaterialTheme(
         colorScheme = colorScheme,

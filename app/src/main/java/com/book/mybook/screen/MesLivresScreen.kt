@@ -1,48 +1,42 @@
 package com.book.mybook.screen
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.book.mybook.components.BottomNavItem
-import com.book.mybook.components.BottomNavigationBar
-import com.book.mybook.ui.theme.BeigeColor
+import com.book.mybook.navigation.BottomNavItem
+import com.book.mybook.navigation.BottomNavigationBar
+import androidx.compose.material3.TopAppBar
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+
 
 data class CategoryItem(
     val name: String,
     val icon: ImageVector
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MesLivresScreen(navController: NavController) {
-    // Liste des catégories avec leurs icônes associées
     val categories = listOf(
         CategoryItem("J'ai", Icons.Default.Menu),
         CategoryItem("Wishlist", Icons.Default.Favorite),
@@ -51,18 +45,13 @@ fun MesLivresScreen(navController: NavController) {
         CategoryItem("J'aime", Icons.Default.Star)
     )
 
-    // Bottom navigation items
     val bottomNavItems = listOf(
         BottomNavItem.MesLivres,
         BottomNavItem.Collection,
         BottomNavItem.Recherche
     )
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(navController = navController, items = bottomNavItems)
-        }
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,32 +67,16 @@ fun MesLivresScreen(navController: NavController) {
                         .fillMaxWidth()
                         .height(100.dp)
                         .clickable {
-
-                            if (category.name == "J'ai") {
-
-                                navController.navigate("jai_livres")
-
-                            } else if (category.name == "Wishlist") {
-                                navController.navigate("wishlist_livres")
+                            when (category.name) {
+                                "J'ai" -> navController.navigate("jai_livres")
+                                "Wishlist" -> navController.navigate("wishlist_livres")
+                                "J'ai lu" -> navController.navigate("jai_lu_livres")
+                                "Je lis" -> navController.navigate("je_lis_livres")
+                                "J'aime" -> navController.navigate("jaime_livres")
                             }
-                            else if (category.name == "J'ai lu") {
-
-                                navController.navigate("jai_lu_livres")
-
-                            }
-                            else if (category.name == "Je lis") {
-                                navController.navigate("je_lis_livres")
-
-                            }
-
-                            else if (category.name == "J'aime") {
-                            navController.navigate("jaime_livres")
-                            }
-
-
                         },
                     colors = CardDefaults.cardColors(
-                        containerColor = BeigeColor
+                        containerColor = MaterialTheme.colorScheme.primary
                     ),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 4.dp
@@ -120,12 +93,12 @@ fun MesLivresScreen(navController: NavController) {
                             imageVector = category.icon,
                             contentDescription = category.name,
                             modifier = Modifier.size(32.dp),
-                            tint = Color.Black,
+                            tint = Color.White,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = category.name,
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
                         )
                     }
                 }

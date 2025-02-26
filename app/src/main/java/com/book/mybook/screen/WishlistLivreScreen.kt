@@ -43,22 +43,7 @@ fun WhishlistLivresScreen(navController: NavController) {
         BookItem("Book Title 3", "Author 3", "2021", R.drawable.ic_launcher_foreground)
     )
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Whishlist") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BeigeColor,
-                    titleContentColor = Color.Black
-                )
-            )
-        }
-    ) { innerPadding ->
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -8,20 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,37 +29,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.book.mybook.components.BottomNavItem
-import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.ui.theme.BeigeColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectionScreen(navController: NavController) {
-    val bottomNavItems = listOf(
-        BottomNavItem.MesLivres,
-        BottomNavItem.Collection,
-        BottomNavItem.Recherche
-    )
-
     // State to manage the search input
     val searchQuery = remember { mutableStateOf(TextFieldValue("")) }
 
     Scaffold(
-                topBar = {
-            TopAppBar(
-                title = { Text("Collection") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BeigeColor,
-                    titleContentColor = Color.Black
-                )
-            )
-        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* Action to create a new collection */ },
@@ -72,9 +47,6 @@ fun CollectionScreen(navController: NavController) {
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Collection")
             }
-        },
-        bottomBar = {
-            BottomNavigationBar(navController = navController, items = bottomNavItems)
         }
     ) { innerPadding ->
         Column(

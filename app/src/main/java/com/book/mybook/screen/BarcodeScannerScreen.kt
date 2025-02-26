@@ -33,8 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.book.mybook.components.BottomNavItem
-import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.navigation.BottomNavigationBar
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -66,18 +65,7 @@ fun BarcodeScannerScreen(navController: NavController) {
     // Camera executor
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
 
-    Scaffold(
-        bottomBar = {
-            BottomNavigationBar(
-                navController = navController,
-                items = listOf(
-                    BottomNavItem.MesLivres,
-                    BottomNavItem.Collection,
-                    BottomNavItem.Recherche
-                )
-            )
-        }
-    ) { innerPadding ->
+    Scaffold() { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

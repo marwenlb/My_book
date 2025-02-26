@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.book.mybook.R
 import com.book.mybook.ui.theme.BeigeColor
+import com.google.android.mediahome.books.BookItem
 
 @ExperimentalMaterial3Api
 @Composable
@@ -44,22 +45,7 @@ fun JaiLuLivresScreen(navController: NavController) {
         BookItem("Book Title 3", "Author 3", "2021", R.drawable.ic_launcher_foreground)
     )
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("J'ai Lu ") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BeigeColor,
-                    titleContentColor = Color.Black
-                )
-            )
-        }
-    ) { innerPadding ->
+    Scaffold{ innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

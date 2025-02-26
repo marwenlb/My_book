@@ -27,8 +27,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.book.mybook.components.BottomNavItem
-import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.navigation.BottomNavigationBar
 
 @ExperimentalMaterial3Api
 @Composable
@@ -36,28 +35,7 @@ fun BarCodeSearchScreen(navController: NavController) {
     var isbnInput by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Scaffold(
-        topBar = {
-
-            TopAppBar(
-                title = { Text("Saisie de l'ISBN ") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-            )
-        },
-        bottomBar = {
-            BottomNavigationBar(
-                navController = navController,
-                items = listOf(
-                    BottomNavItem.MesLivres,
-                    BottomNavItem.Collection,
-                    BottomNavItem.Recherche
-                )
-            )
-        }
-    ) { innerPadding ->
+    Scaffold() { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
