@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,12 +26,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.book.mybook.api.SessionManager
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.ui.theme.BeigeColor
@@ -42,6 +45,8 @@ data class CategoryItem(
 
 @Composable
 fun MesLivresScreen(navController: NavController) {
+    val coroutineScope = rememberCoroutineScope()
+
     // Liste des catégories avec leurs icônes associées
     val categories = listOf(
         CategoryItem("J'ai", Icons.Default.Menu),
@@ -63,6 +68,15 @@ fun MesLivresScreen(navController: NavController) {
             BottomNavigationBar(navController = navController, items = bottomNavItems)
         }
     ) { innerPadding ->
+        Button(onClick = {
+            SessionManager.logout {
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                }
+            }
+        }) {
+            Text("Se déconnecter")
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -70,6 +84,8 @@ fun MesLivresScreen(navController: NavController) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
+
+
         ) {
             categories.forEach { category ->
                 Card(
@@ -115,6 +131,7 @@ fun MesLivresScreen(navController: NavController) {
                             .padding(horizontal = 24.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
+
                     ) {
                         Icon(
                             imageVector = category.icon,

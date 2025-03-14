@@ -1,55 +1,74 @@
 package com.book.mybook.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.book.mybook.components.AddCollectionDialog
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.components.CollectionCard
+import com.book.mybook.components.ErrorSnackbar
+import com.book.mybook.components.LoadingOverlay
 import com.book.mybook.ui.theme.BeigeColor
+import com.book.mybook.viewmodel.CollectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollectionScreen(navController: NavController) {
+fun CollectionScreen(
+    navController: NavController,
+    userId: String,
+    viewModel: CollectionViewModel = viewModel()
+) {
     val bottomNavItems = listOf(
         BottomNavItem.MesLivres,
         BottomNavItem.Collection,
         BottomNavItem.Recherche
     )
 
-    // State to manage the search input
-    val searchQuery = remember { mutableStateOf(TextFieldValue("")) }
+    val context = LocalContext.current
+    val collections by viewModel.collections.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Charger les collections au démarrage
+    LaunchedEffect(userId) {
+        viewModel.loadUserCollections(userId)
+    }
 
     Scaffold(
-                topBar = {
+        topBar = {
             TopAppBar(
                 title = { Text("Collection") },
                 navigationIcon = {
@@ -65,71 +84,81 @@ fun CollectionScreen(navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Action to create a new collection */ },
+                onClick = { showDialog = true },
                 shape = CircleShape,
                 containerColor = BeigeColor,
-                contentColor = Color.Black
-            ) {
+                contentColor = Color.Black,
+                ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Collection")
             }
         },
         bottomBar = {
             BottomNavigationBar(navController = navController, items = bottomNavItems)
+        },
+        snackbarHost = {
+            ErrorSnackbar(
+                errorMessage = error,
+                onDismiss = { viewModel.clearError() }
+            )
         }
     ) { innerPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Search Input
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, bottom = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TextField(
-                    value = searchQuery.value,
-                    onValueChange = { searchQuery.value = it },
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text("Rechercher une collection") },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = BeigeColor,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface
-                    )
-                )
+                if (collections.isEmpty() && !isLoading) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Aucune collection trouvée. Créez-en une nouvelle!")
+                    }
+                } else {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(collections) { collection ->
+                            CollectionCard(
+                                collection = collection,
+                                onClick = {
+                                    // Navigation vers le détail de la collection
+                                    // navController.navigate("collection_detail/${collection.id}")
+                                }
+                            )
+                        }
+                    }
+                }
             }
 
-            // Text: Créer une collection
-            Text(
-                text = "Créer une collection pour organiser votre bibliothèque",
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = 18.sp,
-                modifier = Modifier.padding(bottom = 24.dp),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
-
-            // Button: Créer une collection
-            Button(
-                onClick = { /* Action to create a new collection */ },
-                modifier = Modifier.fillMaxWidth(0.8f),
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                    containerColor = BeigeColor,
-                    contentColor = Color.Black
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add",
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text("Créer une collection")
+            // Afficher l'indicateur de chargement
+            if (isLoading) {
+                LoadingOverlay(isLoading = true)
             }
         }
     }
+
+    // Dialogue d'ajout de collection
+    AddCollectionDialog(
+        showDialog = showDialog,
+        collectionName = viewModel.collectionName.value,
+        onNameChange = { viewModel.collectionName.value = it },
+        collectionDescription = viewModel.collectionDescription.value,
+        onDescriptionChange = { viewModel.collectionDescription.value = it },
+        isPublic = viewModel.isPublic.value,
+        onIsPublicChange = { viewModel.isPublic.value = it },
+        onDismiss = { showDialog = false },
+        onConfirm = {
+            viewModel.createCollection(userId) {
+                showDialog = false
+                Toast.makeText(context, "Collection ajoutée", Toast.LENGTH_SHORT).show()
+            }
+        },
+        isLoading = isLoading
+    )
 }
