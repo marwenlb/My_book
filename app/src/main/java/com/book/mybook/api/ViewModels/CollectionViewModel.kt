@@ -89,6 +89,36 @@ class CollectionViewModel : ViewModel() {
             )
         }
     }
+    private val _sharedUrl = MutableStateFlow<String?>(null)
+    val sharedUrl: StateFlow<String?> = _sharedUrl.asStateFlow()
+
+    fun shareCollection(collectionId: Long, permissions: List<String> = listOf("COLLECTION_READ", "COLLECTION_UPDATE",)) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            val token = SessionManager.getAccessToken()
+            if (token.isNullOrBlank()) {
+                _error.value = "Authentication token is missing"
+                _isLoading.value = false
+                return@launch
+            }
+
+            repository.shareCollection(collectionId, token, permissions).fold(
+                onSuccess = { url ->
+                    _sharedUrl.value = url
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Erreur lors du partage de la collection"
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+    fun clearSharedUrl() {
+        _sharedUrl.value = null
+    }
 
     fun clearError() {
         _error.value = null

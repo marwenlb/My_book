@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.datastore.core)
     implementation(libs.androidx.datastore.ktx)
-
+    implementation("io.coil-kt:coil-compose:2.5.0")
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -15,6 +15,8 @@ import androidx.navigation.compose.composable
 import com.book.mybook.api.SessionManager
 import com.book.mybook.screen.BarCodeSearchScreen
 import com.book.mybook.screen.BarcodeScannerScreen
+import com.book.mybook.screen.BookDetailScreen
+import com.book.mybook.screen.CollectionDetailScreen
 import com.book.mybook.screen.CollectionScreen
 import com.book.mybook.screen.HomeScreen
 import com.book.mybook.screen.JaiLivresScreen
@@ -49,10 +51,17 @@ fun AuthNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         composable("home") { HomeScreen(navController) }
         composable("mes_livres") { MesLivresScreen(navController) }
         composable("collection") {
-            CollectionScreen(navController, userId ?: "28")
+            CollectionScreen(navController, userId ?: "")
         }
 
-
+        composable("collection_detail/{collectionId}") { backStackEntry ->
+            val collectionId = backStackEntry.arguments?.getString("collectionId") ?: ""
+            CollectionDetailScreen(navController = navController, collectionId = collectionId)
+        }
+        composable("book_detail/{bookId}") { backStackEntry ->
+            val bookId = backStackEntry.arguments?.getString("bookId") ?: ""
+            BookDetailScreen(navController = navController, bookId = bookId)
+        }
         composable("recherche") { SearchScreen(navController) }
         composable("barcode_scanner") { BarcodeScannerScreen(navController) }
         composable("barcode_search") { BarCodeSearchScreen(navController) }

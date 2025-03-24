@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -26,7 +30,7 @@ import com.book.mybook.api.Model.CollectionItem
 import com.book.mybook.ui.theme.BeigeColor
 
 @Composable
-fun CollectionCard(collection: CollectionItem, onClick: () -> Unit = {}) {
+fun CollectionCard(collection: CollectionItem, onClick: () -> Unit = {}, onShareClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,8 +39,20 @@ fun CollectionCard(collection: CollectionItem, onClick: () -> Unit = {}) {
         onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = collection.name, fontSize = 18.sp)
-            Text(text = collection.description, fontSize = 14.sp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = collection.name, fontSize = 18.sp)
+                    Text(text = collection.description, fontSize = 14.sp)
+                }
+
+                IconButton(onClick = onShareClick) {
+                    Icon(imageVector = Icons.Default.Share, contentDescription = "Partager")
+                }
+            }
         }
     }
 }

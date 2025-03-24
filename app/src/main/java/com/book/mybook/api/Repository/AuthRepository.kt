@@ -26,10 +26,6 @@ class AuthRepository(private val context: Context) {
         preferences[ACCESS_TOKEN]
     }
 
-    val refreshToken: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[REFRESH_TOKEN]
-    }
-
     val userId: Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[USER_ID]
     }
@@ -78,22 +74,6 @@ class AuthRepository(private val context: Context) {
                 } ?: Result.failure(Exception("Empty response body"))
             } else {
                 Result.failure(Exception("Registration failed: ${response.code()} ${response.message()}"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    suspend fun refreshToken(): Result<AuthResponse> {
-        return try {
-            val response = RetrofitClient.authApiService.refreshToken()
-            if (response.isSuccessful) {
-                response.body()?.let { authResponse ->
-                    saveTokens(authResponse.accessToken, authResponse.refreshToken, authResponse.userId)
-                    Result.success(authResponse)
-                } ?: Result.failure(Exception("Empty response body"))
-            } else {
-                Result.failure(Exception("Token refresh failed: ${response.code()} ${response.message()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)

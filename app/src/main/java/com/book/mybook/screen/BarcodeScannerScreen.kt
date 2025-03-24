@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.book.mybook.api.Repository.addBookToCollection
 import com.book.mybook.api.SessionManager
-import com.book.mybook.api.addBookToCollection
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
 import com.google.mlkit.vision.barcode.BarcodeScanner

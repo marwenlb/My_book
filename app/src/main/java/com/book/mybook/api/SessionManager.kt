@@ -1,5 +1,6 @@
 package com.book.mybook.api
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.book.mybook.api.Repository.AuthRepository
 import kotlinx.coroutines.CoroutineScope
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 object SessionManager {
+    @SuppressLint("StaticFieldLeak")
     private var authRepository: AuthRepository? = null
     private var initialized = false
 

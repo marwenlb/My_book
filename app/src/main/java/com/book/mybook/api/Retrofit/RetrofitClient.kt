@@ -1,8 +1,8 @@
 package com.book.mybook.api.Retrofit
 
 import com.book.mybook.api.AuthInterceptor
-import com.book.mybook.api.BookApiService
 import com.book.mybook.api.Service.AuthApiService
+import com.book.mybook.api.Service.BookApiService
 import com.book.mybook.api.Service.CollectionApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
