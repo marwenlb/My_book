@@ -33,7 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.book.mybook.R
+import com.book.mybook.api.SessionManager
+import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.components.TopBar
 import com.book.mybook.ui.theme.BeigeColor
+import com.book.mybook.ui.theme.Orange
 
 @ExperimentalMaterial3Api
 @Composable
@@ -45,20 +49,22 @@ fun JaiLuLivresScreen(navController: NavController) {
     )
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("J'ai Lu ") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            topBar = {
+            TopBar(title="J'ai Lu",navController = navController, onLogout = {
+                SessionManager.logout {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BeigeColor,
-                    titleContentColor = Color.Black
+                }
+            },showBackButton = true )
+
+        },
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+
                 )
-            )
-        }
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -76,7 +82,7 @@ fun JaiLuLivresScreen(navController: NavController) {
                         .clickable { /* Action for book click */ },
 
                     colors = CardDefaults.cardColors(
-                        containerColor = BeigeColor
+                        containerColor = Orange
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {

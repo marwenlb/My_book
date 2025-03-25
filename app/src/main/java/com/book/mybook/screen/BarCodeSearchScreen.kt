@@ -2,9 +2,12 @@
 package com.book.mybook.screen
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -27,8 +30,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.book.mybook.api.SessionManager
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.components.TopBar
 
 @ExperimentalMaterial3Api
 @Composable
@@ -38,23 +43,20 @@ fun BarCodeSearchScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
+            TopBar(title="Saisie de l'ISBN",navController = navController, onLogout = {
+                SessionManager.logout {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            },showBackButton = true )
 
-            TopAppBar(
-                title = { Text("Saisie de l'ISBN ") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-            )
         },
+
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                items = listOf(
-                    BottomNavItem.MesLivres,
-                    BottomNavItem.Collection,
-                    BottomNavItem.Recherche
-                )
+
             )
         }
     ) { innerPadding ->
@@ -71,13 +73,15 @@ fun BarCodeSearchScreen(navController: NavController) {
                 onValueChange = { isbnInput = it },
                 label = { Text("ISBN") },
                 singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Search
                 ),
+
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         keyboardController?.hide()
@@ -85,6 +89,7 @@ fun BarCodeSearchScreen(navController: NavController) {
                     }
                 )
             )
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Search Button
             Button(
@@ -92,9 +97,8 @@ fun BarCodeSearchScreen(navController: NavController) {
                     keyboardController?.hide()
                     // TODO: Implement search functionality
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier.fillMaxWidth().height(42.dp)
             ) {
                 Text("Rechercher")
             }

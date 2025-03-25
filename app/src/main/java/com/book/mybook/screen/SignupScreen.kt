@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,14 +73,15 @@ fun SignupScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Inscription", fontSize = 24.sp)
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Text("Créer un compte", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Nom d'utilisateur") }
+                label = { Text("Nom d'utilisateur") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -85,7 +89,9 @@ fun SignupScreen(navController: NavController) {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") }
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -94,7 +100,9 @@ fun SignupScreen(navController: NavController) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Mot de passe") },
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -103,7 +111,9 @@ fun SignupScreen(navController: NavController) {
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = { Text("Confirmer le mot de passe") },
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -117,6 +127,10 @@ fun SignupScreen(navController: NavController) {
                         showError = true
                     }
                 },
+                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 enabled = authState !is AuthState.Loading && username.isNotBlank() &&
                         email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()
             ) {

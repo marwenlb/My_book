@@ -1,10 +1,14 @@
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.book.mybook.api.ViewModels.AuthState
 import com.book.mybook.api.ViewModels.LoginViewModel
+import com.book.mybook.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,14 +74,25 @@ fun LoginScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Connexion", fontSize = 24.sp)
+
+            Image(
+                painter = painterResource(id = R.drawable.login), // Replace with your image name
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(330.dp) // Adjust size as needed
+            )
+            Text("Accédez à votre compte", fontSize = 24.sp,
+                fontWeight = FontWeight.Bold )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Nom d'utilisateur") }
+                label = { Text("Nom d'utilisateur") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -83,6 +101,9 @@ fun LoginScreen(navController: NavController) {
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Mot de passe") },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
                 visualTransformation = PasswordVisualTransformation()
             )
 
@@ -90,6 +111,8 @@ fun LoginScreen(navController: NavController) {
 
             Button(
                 onClick = { loginViewModel.login(username, password) },
+                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier.fillMaxWidth().height(56.dp),
                 enabled = authState !is AuthState.Loading && username.isNotBlank() && password.isNotBlank()
             ) {
                 if (authState is AuthState.Loading) {
