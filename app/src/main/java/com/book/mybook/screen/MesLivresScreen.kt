@@ -36,7 +36,9 @@ import androidx.navigation.NavController
 import com.book.mybook.api.SessionManager
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.components.TopBar
 import com.book.mybook.ui.theme.BeigeColor
+import com.book.mybook.ui.theme.Orange
 
 data class CategoryItem(
     val name: String,
@@ -64,8 +66,18 @@ fun MesLivresScreen(navController: NavController) {
     )
 
     Scaffold(
+        topBar = {
+            TopBar(title="Mes livres",navController = navController, onLogout = {
+                SessionManager.logout {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            } )
+
+        },
         bottomBar = {
-            BottomNavigationBar(navController = navController, items = bottomNavItems)
+            BottomNavigationBar(navController = navController)
         }
     ) { innerPadding ->
         Button(onClick = {
@@ -119,7 +131,7 @@ fun MesLivresScreen(navController: NavController) {
 
                         },
                     colors = CardDefaults.cardColors(
-                        containerColor = BeigeColor
+                        containerColor = Orange
                     ),
                     elevation = CardDefaults.cardElevation(
                         defaultElevation = 4.dp
@@ -137,7 +149,7 @@ fun MesLivresScreen(navController: NavController) {
                             imageVector = category.icon,
                             contentDescription = category.name,
                             modifier = Modifier.size(32.dp),
-                            tint = Color.Black,
+                            tint = Color.White,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(

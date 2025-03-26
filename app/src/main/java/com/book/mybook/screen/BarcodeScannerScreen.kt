@@ -45,6 +45,7 @@ import com.book.mybook.api.Repository.addBookToCollection
 import com.book.mybook.api.SessionManager
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
+import com.book.mybook.components.TopBar
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -110,14 +111,20 @@ fun BarcodeScannerScreen(navController: NavController) {
     }
 
     Scaffold(
+        topBar = {
+            TopBar(title="Scanner le code ISBN",navController = navController, onLogout = {
+                SessionManager.logout {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                }
+            },showBackButton = true )
+
+        },
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-                items = listOf(
-                    BottomNavItem.MesLivres,
-                    BottomNavItem.Collection,
-                    BottomNavItem.Recherche
-                )
+
             )
         }
     ) { innerPadding ->

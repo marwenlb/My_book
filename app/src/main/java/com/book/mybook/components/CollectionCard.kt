@@ -24,10 +24,14 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.book.mybook.api.Model.CollectionItem
 import com.book.mybook.ui.theme.BeigeColor
+import com.book.mybook.ui.theme.Mandarine
+import com.book.mybook.ui.theme.Orange
 
 @Composable
 fun CollectionCard(collection: CollectionItem, onClick: () -> Unit = {}, onShareClick: () -> Unit) {
@@ -35,7 +39,7 @@ fun CollectionCard(collection: CollectionItem, onClick: () -> Unit = {}, onShare
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = BeigeColor),
+        colors = CardDefaults.cardColors(containerColor = Mandarine),
         onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -45,12 +49,12 @@ fun CollectionCard(collection: CollectionItem, onClick: () -> Unit = {}, onShare
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(text = collection.name, fontSize = 18.sp)
-                    Text(text = collection.description, fontSize = 14.sp)
+                    Text(text = collection.name, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(text = collection.description, fontSize = 14.sp, color = Color.White)
                 }
 
                 IconButton(onClick = onShareClick) {
-                    Icon(imageVector = Icons.Default.Share, contentDescription = "Partager")
+                    Icon(imageVector = Icons.Default.Share, contentDescription = "Partager", tint =  Color.White)
                 }
             }
         }
@@ -79,9 +83,10 @@ fun AddCollectionDialog(
                     TextField(
                         value = collectionName,
                         onValueChange = onNameChange,
-                        label = { Text("Nom") },
+                        label = { Text("Nom",fontWeight = FontWeight.Bold) },
                         modifier = Modifier.fillMaxWidth(),
-                        enabled = !isLoading
+                        enabled = !isLoading,
+
                     )
                     TextField(
                         value = collectionDescription,

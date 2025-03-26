@@ -1,5 +1,6 @@
 package com.book.mybook
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,11 +13,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.book.mybook.api.SessionManager
+import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.navigation.AuthNavGraph
 import com.book.mybook.ui.theme.MyBookTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,12 +40,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    AuthNavGraph(
-                        navController = navController,
-                        modifier = Modifier.padding(innerPadding)
-                    )
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                 ) {
+                    AuthNavGraph(navController = navController)
                 }
+
+
+
             }
         }
     }

@@ -45,13 +45,16 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.book.mybook.api.SessionManager
 import com.book.mybook.components.AddCollectionDialog
 import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.components.CollectionCard
 import com.book.mybook.components.ErrorSnackbar
 import com.book.mybook.components.LoadingOverlay
+import com.book.mybook.components.TopBar
 import com.book.mybook.ui.theme.BeigeColor
+import com.book.mybook.ui.theme.Orange
 import com.book.mybook.viewmodel.CollectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,31 +87,27 @@ fun CollectionScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Collection") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
+                TopBar(title="Collection",navController = navController, onLogout = {
+                    SessionManager.logout {
+                        navController.navigate("login") {
+                            popUpTo("home") { inclusive = true }
+                        }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BeigeColor,
-                    titleContentColor = Color.Black
-                )
-            )
+                } )
+
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showDialog = true },
                 shape = CircleShape,
-                containerColor = BeigeColor,
-                contentColor = Color.Black
+                containerColor = Orange,
+                contentColor = Color.White
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Ajouter Collection")
             }
         },
         bottomBar = {
-            BottomNavigationBar(navController = navController, items = bottomNavItems)
+            BottomNavigationBar(navController = navController )
         },
         snackbarHost = {
             ErrorSnackbar(

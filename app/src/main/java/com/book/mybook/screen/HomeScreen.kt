@@ -24,7 +24,7 @@ fun HomeScreen(navController: NavController) {
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Mes Livres") }) },
-        bottomBar = { BottomNavigationBar(navController, items) }
+        bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         Box(
             modifier = Modifier

@@ -35,9 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.book.mybook.api.SessionManager
 import com.book.mybook.components.BookCard
+import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.components.ErrorSnackbar
 import com.book.mybook.components.LoadingOverlay
+import com.book.mybook.components.TopBar
 import com.book.mybook.ui.theme.BeigeColor
 import com.book.mybook.viewmodel.CollectionDetailViewModel
 
@@ -58,22 +61,22 @@ fun CollectionDetailScreen(
     }
 
     Scaffold(
+
         topBar = {
-            TopAppBar(
-                title = { Text(collection?.name ?: "Détails de la collection") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Retour"
-                        )
+            TopBar(title=collection?.name ?: "Détails de la collection",navController = navController, onLogout = {
+                SessionManager.logout {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BeigeColor,
-                    titleContentColor = Color.Black
+                }
+            },showBackButton = true )
+
+        },
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+
                 )
-            )
         },
         snackbarHost = {
             ErrorSnackbar(
