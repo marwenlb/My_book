@@ -23,7 +23,6 @@ import com.book.mybook.screen.JaiLivresScreen
 import com.book.mybook.screen.JaiLuLivresScreen
 import com.book.mybook.screen.JaimeLivresScreen
 import com.book.mybook.screen.JeLisLivresScreen
-import com.book.mybook.screen.MesLivresScreen
 import com.book.mybook.screen.SearchScreen
 import com.book.mybook.screen.SignupScreen
 import com.book.mybook.screen.WhishlistLivresScreen
@@ -49,7 +48,7 @@ fun AuthNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         composable("login") { LoginScreen(navController) }
         composable("signup") { SignupScreen(navController) }
         composable("home") { HomeScreen(navController) }
-        composable("mes_livres") { MesLivresScreen(navController) }
+        composable("mes_livres") { HomeScreen(navController) }
         composable("collection") {
             CollectionScreen(navController, userId ?: "")
         }

@@ -17,6 +17,9 @@ class CollectionViewModel : ViewModel() {
     private val _collections = MutableStateFlow<List<CollectionItem>>(emptyList())
     val collections: StateFlow<List<CollectionItem>> = _collections.asStateFlow()
 
+    private val _publicCollections = MutableStateFlow<List<CollectionItem>>(emptyList())
+    val publicCollections: StateFlow<List<CollectionItem>> = _publicCollections.asStateFlow()
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
@@ -42,6 +45,31 @@ class CollectionViewModel : ViewModel() {
             repository.getUserCollections(userId, token).fold(
                 onSuccess = { result ->
                     _collections.value = result
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _error.value = exception.message ?: "Une erreur s'est produite"
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+
+    fun loadPublicCollections() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+
+            val token = SessionManager.getAccessToken()
+            if (token.isNullOrBlank()) {
+                _error.value = "Authentication token is missing"
+                _isLoading.value = false
+                return@launch
+            }
+
+            repository.getPublicCollections(token).fold(
+                onSuccess = { result ->
+                    _publicCollections.value = result.sortedByDescending { it.createdAt }
                     _isLoading.value = false
                 },
                 onFailure = { exception ->
@@ -89,10 +117,11 @@ class CollectionViewModel : ViewModel() {
             )
         }
     }
+
     private val _sharedUrl = MutableStateFlow<String?>(null)
     val sharedUrl: StateFlow<String?> = _sharedUrl.asStateFlow()
 
-    fun shareCollection(collectionId: Long, permissions: List<String> = listOf("COLLECTION_READ", "COLLECTION_UPDATE",)) {
+    fun shareCollection(collectionId: Long, permissions: List<String> = listOf("COLLECTION_READ", "COLLECTION_UPDATE")) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -116,6 +145,7 @@ class CollectionViewModel : ViewModel() {
             )
         }
     }
+
     fun clearSharedUrl() {
         _sharedUrl.value = null
     }

@@ -19,6 +19,10 @@ data class ShareCollectionResponse(
 
 
 interface CollectionApiService {
+
+    @GET("/api/collections")
+    suspend fun getPublicCollections(@Header("Authorization") token: String): List<CollectionItem>
+
     @GET("/api/collections/users/{userId}")
     suspend fun getUserCollections(@Header("Authorization") token: String,
                                    @Path("userId") userId: String): List<CollectionItem>
@@ -38,4 +42,6 @@ interface CollectionApiService {
         @Header("Authorization") token: String,
         @Body request: ShareCollectionRequest
     ): ShareCollectionResponse
+
+
 }

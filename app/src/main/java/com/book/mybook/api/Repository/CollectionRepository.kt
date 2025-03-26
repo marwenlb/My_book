@@ -16,6 +16,15 @@ class CollectionRepository {
         }
     }
 
+    suspend fun getPublicCollections(token: String): Result<List<CollectionItem>> {
+        return try {
+            val collections = api.getPublicCollections("Bearer $token")
+            Result.success(collections)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun createCollection(collection: CollectionItem, token: String): Result<Unit> {
         return try {
             api.createCollection("Bearer $token", collection)
@@ -24,7 +33,7 @@ class CollectionRepository {
             Result.failure(e)
         }
     }
-    // CollectionRepository.kt - Ajouter cette méthode
+
     suspend fun getCollectionById(collectionId: String, token: String): Result<CollectionItem> {
         return try {
             val collection = api.getCollectionById("Bearer $token", collectionId)
@@ -43,9 +52,4 @@ class CollectionRepository {
             Result.failure(e)
         }
     }
-
-
-
-
-
 }
