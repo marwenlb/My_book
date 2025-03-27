@@ -1,5 +1,6 @@
 package com.book.mybook.screen
 
+import BookModel
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -15,6 +16,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,9 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.book.mybook.api.Repository.addBookToCollection
+import com.book.mybook.api.Repository.addBookToDB
 import com.book.mybook.api.SessionManager
-import com.book.mybook.components.BottomNavItem
 import com.book.mybook.components.BottomNavigationBar
 import com.book.mybook.components.TopBar
 import com.google.mlkit.vision.barcode.BarcodeScanner
@@ -62,9 +63,11 @@ fun BarcodeScannerScreen(navController: NavController) {
         hasCameraPermission = isGranted
     }
 
-    // State for showing loading and success popup
-    var showDialog by remember { mutableStateOf(false) }
-    var showSuccess by remember { mutableStateOf(false) }
+    // State for showing loading, success, and book details dialog
+    var showDialog by remember { mutableStateOf(false) }  // Indicate loading state
+    var showSuccess by remember { mutableStateOf(false) } // Indicate success
+    var bookDetails by remember { mutableStateOf<BookModel?>(null) } // Book details
+    var isProcessing by remember { mutableStateOf(false) } // To prevent multiple API calls
 
     // Request camera permission
     LaunchedEffect(Unit) {
@@ -89,42 +92,43 @@ fun BarcodeScannerScreen(navController: NavController) {
 
     // Launch API call after scan
     LaunchedEffect(scannedIsbn) {
+
         scannedIsbn?.let { isbn ->
-            showDialog = true // Afficher le chargement
+            if (isProcessing) return@LaunchedEffect
+
+            isProcessing = true
+            showDialog = true
+
             try {
                 val token = SessionManager.getAccessToken() ?: ""
-                Log.d("BarcodeScanner", "Appel API avec token : $token")
-                val result = addBookToCollection(token, isbn)
+                val result = addBookToDB(token, isbn)
+
                 if (result != null) {
-                    Log.d("BarcodeScanner", "Livre trouvé : ${result.message}")
-                    showSuccess = true
-                } else {
-                    Log.e("BarcodeScanner", "Erreur : le livre n'a pas été trouvé.")
+                    bookDetails = result
+                    showSuccess = true  // ⚠️ Activer showSuccess avant de désactiver showDialog
                 }
             } catch (e: Exception) {
                 Log.e("BarcodeScanner", "Erreur lors de la recherche du livre", e)
             } finally {
-                showDialog = false // Cacher le chargement
+                showDialog = false // Désactiver après showSuccess
+                isProcessing = false
             }
-            scannedIsbn = null
         }
     }
 
     Scaffold(
         topBar = {
-            TopBar(title="Scanner le code ISBN",navController = navController, onLogout = {
+            TopBar(title="Scanner le code ISBN", navController = navController, onLogout = {
                 SessionManager.logout {
                     navController.navigate("login") {
                         popUpTo("home") { inclusive = true }
                     }
                 }
-            },showBackButton = true )
-
+            }, showBackButton = true)
         },
         bottomBar = {
             BottomNavigationBar(
                 navController = navController,
-
             )
         }
     ) { innerPadding ->
@@ -138,10 +142,14 @@ fun BarcodeScannerScreen(navController: NavController) {
                 CameraPreview(
                     context = context,
                     cameraExecutor = cameraExecutor,
+                    isProcessing = isProcessing,
+                    showSuccess = showSuccess,
+                    scannedIsbn = scannedIsbn,
                     onBarcodeDetected = { isbn ->
                         scannedIsbn = isbn
                     }
                 )
+
 
                 // Rectangle zone overlay
                 Box(
@@ -167,96 +175,26 @@ fun BarcodeScannerScreen(navController: NavController) {
                 }
             }
 
-            // Show loading dialog
+            // Show loading dialog only while waiting for API response
             if (showDialog) {
                 LoadingDialog()
             }
 
-            // Show success dialog
-            if (showSuccess) {
-                SuccessDialog(onDismiss = { showSuccess = false })
+            // Show success dialog with book details
+            if (showSuccess && bookDetails != null) {
+                SuccessDialogWithDetails(
+                    book = bookDetails!!,
+                    onDismiss = {
+                        showSuccess = false
+                        bookDetails = null
+                        scannedIsbn = null  // Permet de relancer un scan
+                    }
+
+                )
             }
         }
     }
 }
-@OptIn(ExperimentalGetImage::class)
-@Composable
-
-fun CameraPreview(
-    context: Context,
-    cameraExecutor: java.util.concurrent.ExecutorService,
-    onBarcodeDetected: (String) -> Unit
-) {
-    val lifecycleOwner = rememberUpdatedState(context as androidx.lifecycle.LifecycleOwner)
-    val previewView = remember { PreviewView(context) }
-    val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
-
-    LaunchedEffect(Unit) {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-            val preview = androidx.camera.core.Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
-
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-            val imageAnalyzer = ImageAnalysis.Builder().build().also { analysis ->
-                analysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                    val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                    val mediaImage = imageProxy.image
-                    if (mediaImage != null) {
-                        val inputImage = InputImage.fromMediaImage(mediaImage, rotationDegrees)
-                        barcodeScanner.process(inputImage)
-                            .addOnSuccessListener { barcodes ->
-                                // Ajout de log pour voir tous les codes-barres détectés
-                                Log.d("BarcodeScanner", "Nombre de codes-barres détectés : ${barcodes.size}")
-                                for (barcode in barcodes) {
-                                    // Log pour voir le type de code-barre
-                                    Log.d("BarcodeScanner", "Type de code-barre : ${barcode.valueType}")
-                                    Log.d("BarcodeScanner", "Valeur : ${barcode.displayValue}")
-
-                                    if (barcode.valueType == Barcode.TYPE_ISBN) {
-                                        barcode.displayValue?.let { isbn ->
-                                            Log.d("BarcodeScanner", "ISBN détecté : $isbn")
-                                            onBarcodeDetected(isbn)
-                                        }
-                                    }
-                                }
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("BarcodeScanner", "Erreur de scan", e)
-                            }
-                            .addOnCompleteListener {
-                                imageProxy.close()
-                            }
-                    } else {
-                        imageProxy.close()
-                    }
-                }
-            }
-
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner.value,
-                    cameraSelector,
-                    preview,
-                    imageAnalyzer
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Log.e("BarcodeScanner", "Erreur lors de la configuration de la caméra", e)
-            }
-        }, ContextCompat.getMainExecutor(context))
-    }
-
-    AndroidView(
-        factory = { previewView },
-        modifier = Modifier.fillMaxSize()
-    )
-}
-
 
 @Composable
 fun LoadingDialog() {
@@ -276,11 +214,18 @@ fun LoadingDialog() {
 }
 
 @Composable
-fun SuccessDialog(onDismiss: () -> Unit) {
+fun SuccessDialogWithDetails(book: BookModel, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Succès") },
-        text = { Text("Le livre a été ajouté avec succès !") },
+        title = { Text("Livre ajouté") },
+        text = {
+            Column {
+                Text("Titre : ${book.title}")
+                Text("Auteur(s) : ${book.authors.joinToString(", ") { it.name }}")
+                Text("ISBN : ${book.isbn}")
+                Text("Description : ${book.description ?: "Pas de description disponible."}")
+            }
+        },
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text("OK")
@@ -288,3 +233,89 @@ fun SuccessDialog(onDismiss: () -> Unit) {
         }
     )
 }
+
+@OptIn(ExperimentalGetImage::class)
+@Composable
+fun CameraPreview(
+    context: Context,
+    cameraExecutor: java.util.concurrent.ExecutorService,
+    isProcessing: Boolean,
+    showSuccess: Boolean,
+    scannedIsbn: String?, // Pass scannedIsbn to track when it resets
+    onBarcodeDetected: (String) -> Unit
+) {
+    val lifecycleOwner = rememberUpdatedState(context as androidx.lifecycle.LifecycleOwner)
+    val previewView = remember { PreviewView(context) }
+    val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient()
+
+    var hasDetectedBarcode by remember { mutableStateOf(false) }
+
+    // Reset hasDetectedBarcode when scannedIsbn is reset
+    LaunchedEffect(scannedIsbn) {
+        if (scannedIsbn == null) {
+            hasDetectedBarcode = false // Enable scanning again
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+            val preview = androidx.camera.core.Preview.Builder().build().also {
+                it.setSurfaceProvider(previewView.surfaceProvider)
+            }
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build().also { analysis ->
+                    analysis.setAnalyzer(cameraExecutor) { imageProxy ->
+                        if (!isProcessing && !hasDetectedBarcode && !showSuccess) {
+                            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                            val mediaImage = imageProxy.image
+                            if (mediaImage != null) {
+                                val inputImage = InputImage.fromMediaImage(mediaImage, rotationDegrees)
+                                barcodeScanner.process(inputImage)
+                                    .addOnSuccessListener { barcodes ->
+                                        for (barcode in barcodes) {
+                                            if (barcode.valueType == Barcode.TYPE_ISBN) {
+                                                barcode.displayValue?.let { isbn ->
+                                                    hasDetectedBarcode = true
+                                                    onBarcodeDetected(isbn)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .addOnCompleteListener {
+                                        imageProxy.close()
+                                    }
+                            } else {
+                                imageProxy.close()
+                            }
+                        } else {
+                            imageProxy.close()
+                        }
+                    }
+                }
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    lifecycleOwner.value,
+                    cameraSelector,
+                    preview,
+                    imageAnalyzer
+                )
+            } catch (e: Exception) {
+                Log.e("BarcodeScanner", "Error setting up the camera", e)
+            }
+        }, ContextCompat.getMainExecutor(context))
+    }
+
+    AndroidView(
+        factory = { previewView },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+

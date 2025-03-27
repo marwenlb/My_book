@@ -32,7 +32,6 @@ interface CollectionApiService {
     suspend fun createCollection(@Header("Authorization") token: String,
                                  @Body collection: CollectionItem)
 
-    // CollectionApiService.kt - Ajouter cet endpoint
     @GET("/api/collections/{collectionId}")
     suspend fun getCollectionById(@Header("Authorization") token: String,
                                   @Path("collectionId") collectionId: String): CollectionItem

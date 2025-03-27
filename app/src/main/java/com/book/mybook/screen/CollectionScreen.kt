@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -24,12 +23,9 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,7 +49,6 @@ import com.book.mybook.components.CollectionCard
 import com.book.mybook.components.ErrorSnackbar
 import com.book.mybook.components.LoadingOverlay
 import com.book.mybook.components.TopBar
-import com.book.mybook.ui.theme.BeigeColor
 import com.book.mybook.ui.theme.Orange
 import com.book.mybook.viewmodel.CollectionViewModel
 
@@ -182,8 +177,8 @@ fun CollectionScreen(
         onNameChange = { viewModel.collectionName.value = it },
         collectionDescription = viewModel.collectionDescription.value,
         onDescriptionChange = { viewModel.collectionDescription.value = it },
-        isPublic = viewModel.isPublic.value,
-        onIsPublicChange = { viewModel.isPublic.value = it },
+        isPublic = viewModel.isShareable.value,
+        onIsPublicChange = { viewModel.isShareable.value = it },
         onDismiss = { showDialog = false },
         onConfirm = {
             viewModel.createCollection(userId) {

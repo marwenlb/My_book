@@ -9,7 +9,7 @@ data class CollectionItem(
     val createdAt: String? = null,
     val user: UserModel? = null,
     val books: List<BookModel> = emptyList(),
-    val isPublic: Boolean
+    val isShareable: Boolean
 )
 
 data class UserModel(

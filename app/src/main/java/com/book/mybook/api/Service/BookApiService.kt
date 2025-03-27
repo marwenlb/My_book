@@ -19,13 +19,6 @@ data class BookRequest(
 data class ApiResponse(val message: String)
 
 interface BookApiService {
-    // Search books by ISBN (already defined)
-    @GET("api/books/search")
-    suspend fun searchBooks(
-        @Header("Authorization") token: String,
-        @Query("isbn") isbn: String
-    ): ApiResponse
-
     // Get a book by ID
     @GET("/api/books/{bookId}")
     suspend fun getBookById(
@@ -39,4 +32,26 @@ interface BookApiService {
         @Header("Authorization") token: String,
         @Body bookRequest: BookRequest
     ): ApiResponse
+
+
+    // Dans votre interface ApiService
+    @GET("api/books/search")
+    suspend fun searchBookByIsbn(
+        @Header("Authorization") token: String,
+        @Query("isbn") isbn: String
+    ): List<BookModel>
+
+        @POST("api/collections/add_book")
+        suspend fun addBookToCollection(
+            @Header("Authorization") token: String,  // Token is added to the header
+            @Body request: AddBookRequest  // Request body
+        ): ApiResponse
+
+    data class AddBookRequest(
+        val collectionId: Int,
+        val bookId: Int
+    )
+
 }
+
+

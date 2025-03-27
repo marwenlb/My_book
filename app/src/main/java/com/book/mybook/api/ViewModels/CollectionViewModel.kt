@@ -28,7 +28,7 @@ class CollectionViewModel : ViewModel() {
 
     val collectionName = mutableStateOf("")
     val collectionDescription = mutableStateOf("")
-    val isPublic = mutableStateOf(true)
+    val isShareable = mutableStateOf(true)
 
     fun loadUserCollections(userId: String) {
         viewModelScope.launch {
@@ -36,6 +36,7 @@ class CollectionViewModel : ViewModel() {
             _error.value = null
 
             val token = SessionManager.getAccessToken()
+            val userId=SessionManager.getUserId().toString()
             if (token.isNullOrBlank()) {
                 _error.value = "Authentication token is missing"
                 _isLoading.value = false
@@ -101,7 +102,7 @@ class CollectionViewModel : ViewModel() {
                 id = "",
                 name = collectionName.value,
                 description = collectionDescription.value,
-                isPublic = isPublic.value
+                isShareable = isShareable.value
             )
 
             repository.createCollection(newCollection, token).fold(
@@ -157,6 +158,6 @@ class CollectionViewModel : ViewModel() {
     private fun resetForm() {
         collectionName.value = ""
         collectionDescription.value = ""
-        isPublic.value = true
+        isShareable.value = true
     }
 }
